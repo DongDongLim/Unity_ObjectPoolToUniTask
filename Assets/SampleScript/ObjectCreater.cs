@@ -27,12 +27,7 @@ namespace ObjectPoolSample
 
         private void Awake()
         {
-            _poolParentTransform = transform;
-            _samplePrefab = _sampleObject.GetComponent<SampleObject>();
-            _samplePopList = new List<SampleObject>();
-            _samplePool = new ObjectPool<SampleObject>(_poolParentTransform, _samplePrefab, false);            
-            _startButton.onClick.AddListener(() => StartLoop().Forget());
-            _cancelButton.onClick.AddListener(CancelLoop);           
+            Initialize().Forget();
         }
 
         private CancellationTokenSource CreateCancellationTokenSource()
@@ -58,15 +53,17 @@ namespace ObjectPoolSample
             _samplePopList.Clear();
         }
 
-        private async UniTaskVoid StartLoop()
+        private async UniTaskVoid Initialize()
         {
-            if (_cancelToken == null || _cancelToken.IsCancellationRequested == true)
-            {
-                _cancelToken = CreateCancellationTokenSource();
-            }
+            _poolParentTransform = transform;
+            _samplePrefab = _sampleObject.GetComponent<SampleObject>();
+            _samplePopList = new List<SampleObject>();
+            _samplePool = new ObjectPool<SampleObject>(_poolParentTransform, _samplePrefab, false);
 
             await PrePoolObject();
-            LoopPopObject().Forget();
+
+            _startButton.onClick.AddListener(() => StartLoop().Forget());
+            _cancelButton.onClick.AddListener(CancelLoop);
         }
 
         private async UniTask PrePoolObject()
@@ -74,9 +71,14 @@ namespace ObjectPoolSample
             await _samplePool.PreLoadAsync(50, 10);
         }
 
-        private async UniTaskVoid LoopPopObject()
+        private async UniTaskVoid StartLoop()
         {
-            while(_cancelToken.IsCancellationRequested == false)
+            if (_cancelToken == null || _cancelToken.IsCancellationRequested == true)
+            {
+                _cancelToken = CreateCancellationTokenSource();
+            }
+
+            while (_cancelToken.IsCancellationRequested == false)
             {
                 var sample = _samplePool.Rent();
 
@@ -94,6 +96,11 @@ namespace ObjectPoolSample
 
             _samplePopList.Remove(sample);
             _samplePool.Return(sample);
+        }
+
+        private void OnDestroy()
+        {
+            CancelLoop();
         }
     }
 }
