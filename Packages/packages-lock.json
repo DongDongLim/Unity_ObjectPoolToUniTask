@@ -1,5 +1,13 @@
 {
   "dependencies": {
+    "com.cysharp.objectpool-to-unitask": {
+      "version": "file:ObjectPoolToUniTask",
+      "depth": 0,
+      "source": "embedded",
+      "dependencies": {
+        "com.cysharp.unitask": "2.3.3"
+      }
+    },
     "com.cysharp.unitask": {
       "version": "https://github.com/Cysharp/UniTask.git?path=src/UniTask/Assets/Plugins/UniTask",
       "depth": 0,

@@ -1,0 +1,10 @@
+{
+  "name": "com.cysharp.objectpool-to-unitask",
+  "version": "1.0.0",
+  "displayName": "ObjectPoolToUniTask",
+  "description": "I tried to recreate UniRx's Objectpool using UniTask",
+  "unity": "2018.4",
+  "dependencies": {
+    "com.cysharp.unitask": "2.3.3"
+  }
+}
